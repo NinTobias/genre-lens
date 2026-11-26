@@ -1,5 +1,6 @@
 import math
 
+import librosa
 import numpy as np
 import pandas as pd
 import pytest
@@ -12,6 +13,7 @@ from genre_lens.features import (
     extract_window_features,
     load_or_build_features,
     split_windows,
+    zero_crossing_rate,
 )
 
 from .conftest import SR, make_tone
@@ -106,3 +108,19 @@ def test_feature_extraction_is_deterministic(tmp_path):
     a = pd.DataFrame(extract_track_features(path, sr=SR))
     b = pd.DataFrame(extract_track_features(path, sr=SR))
     pd.testing.assert_frame_equal(a, b)
+
+
+@pytest.mark.parametrize("seed", [0, 1, 2])
+def test_numpy_zero_crossing_rate_matches_librosa(seed):
+    rng = np.random.default_rng(seed)
+    y = (0.3 * make_tone(200, 3) + 0.1 * rng.standard_normal(3 * SR)).astype(np.float32)
+    np.testing.assert_allclose(
+        zero_crossing_rate(y), librosa.feature.zero_crossing_rate(y), atol=1e-9
+    )
+
+
+def test_chroma_of_a440_peaks_at_pitch_class_a():
+    f = extract_window_features(make_tone(440, 3), SR)
+    chroma_means = [f[f"chroma_{i:02d}_mean"] for i in range(1, 13)]
+    # pitch classes start at C, so A is index 9
+    assert int(np.argmax(chroma_means)) == 9

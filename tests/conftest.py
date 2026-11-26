@@ -22,6 +22,11 @@ def cfg(tmp_path) -> dict:
         "audio": {"sample_rate": SR, "clip_seconds": 30, "window_seconds": 3},
         "features": {"n_mfcc": 20, "cache_path": str(tmp_path / "features.parquet")},
         "data": {"path": str(tmp_path / "genres"), "test_size": 0.25},
+        "training": {
+            "cv_folds": 3,
+            "output_dir": str(tmp_path / "reports"),
+            "model_dir": str(tmp_path / "models"),
+        },
     }
 
 
@@ -44,4 +49,25 @@ def track_table() -> pd.DataFrame:
         for g in ("a", "b", "c")
         for i in range(10)
     ]
+    return pd.DataFrame(rows)
+
+
+@pytest.fixture
+def synthetic_features() -> pd.DataFrame:
+    """Feature table without audio: 4 genres x 15 tracks x 6 windows, separable by design."""
+    rng = np.random.default_rng(0)
+    genres = ["blues", "jazz", "metal", "pop"]
+    n_features = 8
+    rows = []
+    for g_idx, genre in enumerate(genres):
+        genre_center = np.zeros(n_features)
+        genre_center[g_idx * 2 : g_idx * 2 + 2] = 3.0
+        for t in range(15):
+            track_offset = rng.normal(0, 0.5, n_features)
+            for w in range(6):
+                values = genre_center + track_offset + rng.normal(0, 1.0, n_features)
+                rows.append(
+                    {"track_id": f"{genre}/{genre}.{t:05d}", "genre": genre, "window": w}
+                    | {f"feat_{i}": v for i, v in enumerate(values)}
+                )
     return pd.DataFrame(rows)

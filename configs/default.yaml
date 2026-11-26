@@ -9,3 +9,7 @@ features:
 data:
   path: data/gtzan/genres
   test_size: 0.2
+training:
+  cv_folds: 5
+  output_dir: reports
+  model_dir: models

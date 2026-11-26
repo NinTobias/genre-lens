@@ -34,7 +34,7 @@ Confusion matrix and error analysis: *coming soon* (`reports/figures/`).
    - Zero-crossing rate, RMS energy
    - Tempo and onset strength (rhythm)
 3. **Models:** Logistic Regression, Random Forest, SVM, compared against a dummy baseline.
-4. **Evaluation:** stratified cross-validation, accuracy, macro-F1, confusion matrix, feature importance.
+4. **Evaluation:** models predict per 3 s window; predictions are combined per track by majority vote, and **track-level** scores are the headline numbers. Track-grouped, stratified cross-validation on the train tracks is used to compare models, the best model is chosen by CV score, and the held-out test tracks are used once for the final scores. Reported: accuracy, macro-F1, confusion matrix, feature importance.
 5. **Leakage control:** all windows of one track always stay in the same split.
 
 ## Quickstart
@@ -55,7 +55,13 @@ python -m genre_lens.features --n-jobs -1          # writes data/features.parque
 python -m genre_lens.features --force              # recompute after changing the config
 ```
 
-Training, evaluation and prediction commands will be documented here once implemented.
+Train and compare the models (cross-validation on the train tracks, one final evaluation on held-out test tracks):
+
+```bash
+python -m genre_lens.train
+```
+
+This writes `reports/results.md` and `reports/results.csv` (scores), `reports/metrics.json`, `reports/classification_report.txt`, `reports/figures/confusion_matrix.png`, `reports/figures/feature_importance.png` and the best model to `models/best_model.joblib` (not tracked by git). A prediction command will be documented here once implemented.
 
 ## Project structure
 

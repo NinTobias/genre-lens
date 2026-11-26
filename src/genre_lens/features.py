@@ -40,6 +40,23 @@ def split_windows(y: np.ndarray, sr: int, window_seconds: float) -> list[np.ndar
     return [y[i * size : (i + 1) * size] for i in range(len(y) // size)]
 
 
+def zero_crossing_rate(
+    y: np.ndarray, frame_length: int = 2048, hop_length: int = 512
+) -> np.ndarray:
+    """Frame-wise zero-crossing rate, shape ``(1, n_frames)``.
+
+    Pure NumPy re-implementation of ``librosa.feature.zero_crossing_rate``. librosa's version
+    runs through a numba-compiled function, which crashed on some Windows setups; this one has
+    no compiled dependency and is tested to match librosa's output.
+    """
+    padded = np.pad(y, frame_length // 2, mode="edge")
+    frames = librosa.util.frame(padded, frame_length=frame_length, hop_length=hop_length)
+    frames = np.where(np.abs(frames) <= 1e-10, 0.0, frames)
+    crossings = np.diff(np.signbit(frames), axis=0)
+    # librosa pads the first sample of each frame as 'no crossing', i.e. divides by frame_length
+    return crossings.sum(axis=0, keepdims=True) / frame_length
+
+
 def _add_stats(out: dict[str, float], name: str, matrix: np.ndarray) -> None:
     """Add mean and std over time for each row of a (n_rows, n_frames) matrix."""
     mean, std = matrix.mean(axis=1), matrix.std(axis=1)
@@ -56,13 +73,15 @@ def extract_window_features(y: np.ndarray, sr: int, n_mfcc: int = 20) -> dict[st
     onset_env = librosa.onset.onset_strength(y=y, sr=sr)
 
     out: dict[str, float] = {}
+    # tuning=0.0 skips librosa's automatic tuning estimation (pitch tracking), which is noisy
+    # on 3 s windows, slow, and crashed natively on some Windows installs.
     _add_stats(out, "mfcc", librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc))
-    _add_stats(out, "chroma", librosa.feature.chroma_stft(S=magnitude, sr=sr))
+    _add_stats(out, "chroma", librosa.feature.chroma_stft(S=magnitude, sr=sr, tuning=0.0))
     _add_stats(out, "spectral_centroid", librosa.feature.spectral_centroid(S=magnitude, sr=sr))
     _add_stats(out, "spectral_bandwidth", librosa.feature.spectral_bandwidth(S=magnitude, sr=sr))
     _add_stats(out, "spectral_rolloff", librosa.feature.spectral_rolloff(S=magnitude, sr=sr))
     _add_stats(out, "spectral_contrast", librosa.feature.spectral_contrast(S=magnitude, sr=sr))
-    _add_stats(out, "zcr", librosa.feature.zero_crossing_rate(y))
+    _add_stats(out, "zcr", zero_crossing_rate(y))
     _add_stats(out, "rms", librosa.feature.rms(S=magnitude))
     _add_stats(out, "onset_strength", onset_env[np.newaxis, :])
     out["tempo"] = float(np.atleast_1d(librosa.feature.tempo(onset_envelope=onset_env, sr=sr))[0])
