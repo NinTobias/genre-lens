@@ -2,6 +2,7 @@
 
 Music genre classification from audio features (MFCC, chroma, spectral, rhythm) with a reproducible ML pipeline.
 
+[![CI](https://github.com/NinTobias/genre-lens/actions/workflows/ci.yml/badge.svg)](https://github.com/NinTobias/genre-lens/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-work%20in%20progress-orange)
@@ -31,7 +32,7 @@ Confusion matrix and error analysis: *coming soon* (`reports/figures/`).
    - Spectral centroid, bandwidth, rolloff, contrast
    - Chroma
    - Zero-crossing rate, RMS energy
-   - Tempo and beat strength
+   - Tempo and onset strength (rhythm)
 3. **Models:** Logistic Regression, Random Forest, SVM, compared against a dummy baseline.
 4. **Evaluation:** stratified cross-validation, accuracy, macro-F1, confusion matrix, feature importance.
 5. **Leakage control:** all windows of one track always stay in the same split.
@@ -47,7 +48,14 @@ pip install -e ".[dev]"
 pytest
 ```
 
-Place the dataset as described in [`data/README.md`](data/README.md). Pipeline commands (feature extraction, training, prediction) will be documented here once implemented.
+Place the dataset as described in [`data/README.md`](data/README.md), then extract and cache the features:
+
+```bash
+python -m genre_lens.features --n-jobs -1          # writes data/features.parquet
+python -m genre_lens.features --force              # recompute after changing the config
+```
+
+Training, evaluation and prediction commands will be documented here once implemented.
 
 ## Project structure
 
@@ -65,12 +73,12 @@ genre-lens/
 ## Roadmap
 
 - [x] Repository setup
-- [ ] Data loading and track-aware train/test split
-- [ ] Feature extraction with caching
+- [x] Data loading and track-aware train/test split (with leakage tests)
+- [x] Feature extraction with caching (91 features per 3 s window)
 - [ ] EDA notebook
 - [ ] Baseline and classical models with cross-validation
 - [ ] Confusion matrix, feature importance, error analysis
-- [ ] Unit tests and CI (GitHub Actions)
+- [x] Unit tests and CI (GitHub Actions)
 - [ ] NumPy STFT implementation, validated against `librosa.stft`
 - [ ] Prediction CLI
 - [ ] Optional: CNN on mel-spectrograms for comparison
