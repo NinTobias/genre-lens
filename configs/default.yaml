@@ -1,0 +1,10 @@
+seed: 42
+audio:
+  sample_rate: 22050
+  clip_seconds: 30
+  window_seconds: 3
+features:
+  n_mfcc: 20
+data:
+  path: data/gtzan/genres
+  test_size: 0.2

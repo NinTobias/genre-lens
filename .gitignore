@@ -1,0 +1,49 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+
+# --- Tools & caches ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Data (never commit datasets or audio) ---
+data/*
+!data/.gitkeep
+!data/README.md
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.au
+
+# --- Generated artifacts ---
+# Cached features can be re-created with the pipeline
+*.parquet
+features_cache/
+# Large model files; small final models may be force-added with `git add -f`
+models/*
+!models/.gitkeep
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Secrets ---
+.env
