@@ -1,0 +1,18 @@
+Model: svm_rbf (track level, held-out test tracks)
+
+              precision    recall  f1-score   support
+
+       blues       0.95      0.90      0.92        20
+   classical       0.91      1.00      0.95        20
+     country       0.75      0.90      0.82        20
+       disco       0.83      0.75      0.79        20
+      hiphop       0.82      0.90      0.86        20
+        jazz       0.91      1.00      0.95        20
+       metal       0.95      0.90      0.92        20
+         pop       0.74      0.85      0.79        20
+      reggae       1.00      0.75      0.86        20
+        rock       0.81      0.65      0.72        20
+
+    accuracy                           0.86       200
+   macro avg       0.87      0.86      0.86       200
+weighted avg       0.87      0.86      0.86       200

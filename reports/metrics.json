@@ -1,0 +1,68 @@
+{
+  "seed": 42,
+  "test_size": 0.2,
+  "n_train_tracks": 799,
+  "n_test_tracks": 200,
+  "best_model_by_cv": "svm_rbf",
+  "top_confusions_best_model": [
+    {
+      "true": "rock",
+      "predicted": "pop",
+      "count": 4
+    },
+    {
+      "true": "disco",
+      "predicted": "hiphop",
+      "count": 2
+    },
+    {
+      "true": "hiphop",
+      "predicted": "disco",
+      "count": 2
+    },
+    {
+      "true": "metal",
+      "predicted": "rock",
+      "count": 2
+    },
+    {
+      "true": "pop",
+      "predicted": "country",
+      "count": 2
+    }
+  ],
+  "results": [
+    {
+      "model": "dummy",
+      "cv_track_acc": 0.10012578616352201,
+      "cv_track_acc_std": 0.00025157232704402514,
+      "test_track_acc": 0.1,
+      "test_track_macro_f1": 0.01818181818181818,
+      "test_window_acc": 0.1
+    },
+    {
+      "model": "logreg",
+      "cv_track_acc": 0.7909669811320755,
+      "cv_track_acc_std": 0.03240591785347164,
+      "test_track_acc": 0.805,
+      "test_track_macro_f1": 0.7976756003025146,
+      "test_window_acc": 0.721
+    },
+    {
+      "model": "random_forest",
+      "cv_track_acc": 0.7647327044025158,
+      "cv_track_acc_std": 0.011073955294245416,
+      "test_track_acc": 0.76,
+      "test_track_macro_f1": 0.7558142053090985,
+      "test_window_acc": 0.729
+    },
+    {
+      "model": "svm_rbf",
+      "cv_track_acc": 0.832311320754717,
+      "cv_track_acc_std": 0.019758887262330747,
+      "test_track_acc": 0.86,
+      "test_track_macro_f1": 0.8585776864234635,
+      "test_window_acc": 0.772
+    }
+  ]
+}
