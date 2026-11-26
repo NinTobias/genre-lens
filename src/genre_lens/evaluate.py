@@ -63,7 +63,7 @@ def plot_confusion_matrix(
     labels = sorted(set(y_true) | set(y_pred))
     cm = confusion_matrix(y_true, y_pred, labels=labels, normalize="true")
     fig = Figure(figsize=(8, 7))
-    ax = fig.subplots()
+    ax = fig.add_subplot()
     ConfusionMatrixDisplay(cm, display_labels=labels).plot(
         ax=ax, cmap="Blues", xticks_rotation=45, values_format=".2f", colorbar=False
     )
@@ -80,7 +80,7 @@ def plot_feature_importance(
     """Save a horizontal bar chart of the ``top_n`` most important features."""
     order = np.argsort(importances)[::-1][:top_n][::-1]
     fig = Figure(figsize=(8, 7))
-    ax = fig.subplots()
+    ax = fig.add_subplot()
     ax.barh([feature_names[i] for i in order], importances[order], color="#4C72B0")
     ax.set_title(f"Top {len(order)} feature importances (Random Forest)")
     ax.set_xlabel("Importance")

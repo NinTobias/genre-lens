@@ -37,3 +37,18 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B"]
+
+[tool.pylint.main]
+source-roots = ["src"]
+
+[tool.pylint."messages control"]
+# Style opinions that clash with common ML/pytest conventions; ruff is the project linter.
+disable = [
+    "redefined-outer-name",         # pytest fixtures are passed in under their own name
+    "invalid-name",                 # X / X_train is the scikit-learn convention
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "too-many-arguments",
+    "too-many-positional-arguments",
+    "too-many-locals",
+]

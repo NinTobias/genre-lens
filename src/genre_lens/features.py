@@ -114,7 +114,7 @@ def _process_track(row: dict[str, Any], audio_cfg: dict, n_mfcc: int) -> list[di
             window_seconds=audio_cfg["window_seconds"],
             n_mfcc=n_mfcc,
         )
-    except Exception as exc:  # corrupt files exist in real datasets
+    except Exception as exc:  # pylint: disable=broad-exception-caught  # corrupt files exist
         logger.warning("Skipping %s: %s", row["track_id"], exc)
         return None
     return [{"track_id": row["track_id"], "genre": row["genre"], **w} for w in windows]
